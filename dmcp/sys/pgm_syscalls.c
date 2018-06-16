@@ -51,7 +51,7 @@ void Program_Entry();
 prog_info_t const prog_info = {
 	PROG_INFO_MAGIC,       // uint32_t pgm_magic;
 	0,                     // uint32_t pgm_size;
-	(void*)Program_Entry,  // void * pgm_entry;
+	Program_Entry,         // void (*pgm_entry)();
 	PLATFORM_IFC_CNR,      // uint32_t ifc_cnr;
 	PLATFORM_IFC_VER,      // uint32_t ifc_ver;
 	QSPI_DATA_SIZE,        // uint32_t qspi_size;

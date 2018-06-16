@@ -428,7 +428,7 @@ void program_main();
 typedef struct {
 	uint32_t pgm_magic;
 	uint32_t pgm_size;
-	void * pgm_entry;
+	void (*pgm_entry)();
 	uint32_t ifc_cnr;
 	uint32_t ifc_ver;
 	uint32_t qspi_size;
