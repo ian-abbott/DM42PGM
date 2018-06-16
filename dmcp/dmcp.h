@@ -467,8 +467,6 @@ int printer_busy_for(int what);
 //  Menu pages
 // --------------------------------
 
-typedef void void_fn_t();
-
 typedef struct {
   const char  * name;
   const uint8_t * items;
