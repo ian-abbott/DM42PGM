@@ -776,7 +776,7 @@ int is_gr_print = 0;
 
 volatile uint8_t printer_was_graphics = 0;
 
-uint get_printer_delay() {
+unsigned int get_printer_delay() {
   return core_printer_delay();
 }
 
@@ -796,32 +796,32 @@ void draw_hp42_lcd(const char *bits, int bytesperline, int x, int y, int width, 
   #define HP_LCD_Y  16
 
    // Pixel size
-  uint const px = is_graphics ? 3 : 2;
-  uint const py = is_graphics ? 4 : 2;
-  uint const x_shft = is_graphics ? 0 : 1;
+  unsigned int const px = is_graphics ? 3 : 2;
+  unsigned int const py = is_graphics ? 4 : 2;
+  unsigned int const x_shft = is_graphics ? 0 : 1;
 
-  uint const lcd_y_base = LCD_HEADER_LINES + LCD_ANN_LINES + 2; // Bottom // Top: LCD_Y - 4;
+  unsigned int const lcd_y_base = LCD_HEADER_LINES + LCD_ANN_LINES + 2; // Bottom // Top: LCD_Y - 4;
 
-  uint const adx = px*(HP_LCD_X+1)+1;
-  uint const ady = py*HP_LCD_Y;
-  uint const ax = LCD_X - adx - 8*x_shft;
-  uint const ay = lcd_y_base;
+  unsigned int const adx = px*(HP_LCD_X+1)+1;
+  unsigned int const ady = py*HP_LCD_Y;
+  unsigned int const ax = LCD_X - adx - 8*x_shft;
+  unsigned int const ay = lcd_y_base;
   lcd_fill_rect(ax-2, ay-2, adx+4, ady+4,1);
   lcd_fill_rect(ax-1, ay-1, adx+2, ady+2,0);
 
-  uint const px_mask = (1 << px)-1;
+  unsigned int const px_mask = (1 << px)-1;
   #define HP_LCD_X_BYTES ((HP_LCD_X*px+7)/8)
   #define LCD_X_BYTES (LCD_X/8)
-  uint lcd_y = lcd_y_base + py*y;
+  unsigned int lcd_y = lcd_y_base + py*y;
   uint8_t *c;
-  uint i,j;
+  unsigned int i,j;
   for (int v = y; v < y + height; v++) {
     uint8_t *bi = (uint8_t*)(bits + (v+1) * bytesperline - 1 );
     c = lcd_line_addr(lcd_y) + x_shft; // lbuf+2
-    uint n = HP_LCD_X_BYTES;
-    uint outbits = 8;
-    uint z=0xFFFFFF, m=px_mask; // This way z support px <= 3
-    uint i_mask = 8;
+    unsigned int n = HP_LCD_X_BYTES;
+    unsigned int outbits = 8;
+    unsigned int z=0xFFFFFF, m=px_mask; // This way z support px <= 3
+    unsigned int i_mask = 8;
 
     // Translate each byte
     for(;;) {
@@ -919,23 +919,23 @@ void shell_print(const char *text, int length,
       printer_was_graphics = 1;
     }
     
-    for(uint iy = 0; iy < (uint)height; iy+=8 ) {
-      uint ix = iy*bytesperline;
+    for(unsigned int iy = 0; iy < (unsigned int)height; iy+=8 ) {
+      unsigned int ix = iy*bytesperline;
       
       // Print single line (= 8 lines from bits)
       print_wait_for(PRINT_GRA_LN);
       print_byte(27);    // ESC
       print_byte(width); // number of columns
       
-      for(uint xx=0; xx < (uint)width; xx++) {
+      for(unsigned int xx=0; xx < (unsigned int)width; xx++) {
 
         uint8_t msk = 1 << (xx & 7);
-        uint k = ix + (xx>>3);
+        unsigned int k = ix + (xx>>3);
 
         uint8_t a = 0; // byte to send
         uint8_t amsk = 1;
-        const uint lasty = (iy+8 < (uint)height) ? iy+8 : height; // Limit for y
-        for (uint yy=0; yy < lasty; yy++,k+=bytesperline,amsk<<=1)
+        const unsigned int lasty = (iy+8 < (unsigned int)height) ? iy+8 : height; // Limit for y
+        for (unsigned int yy=0; yy < lasty; yy++,k+=bytesperline,amsk<<=1)
           if ( bits[k] & msk ) a |= amsk;
         print_byte(a);
       }
@@ -1185,7 +1185,7 @@ int shell_wants_cpu() {
 
 int shell_read(char *buf, int4 buflen) {
   DBGSHELL("shell_read: %08x : %i\n", (unsigned)buf, buflen);
-  uint rd;
+  unsigned int rd;
   pgm_res = f_read(ppgm_fp, buf, buflen, &rd);
   DBGSHELL(" ... read %i  err=%i\n",rd,pgm_res);
   return rd;
@@ -1194,7 +1194,7 @@ int shell_read(char *buf, int4 buflen) {
 
 int shell_write(const char *buf, int4 buflen) {
   DBGSHELL("shell_read: %08x : %i\n", (unsigned)buf, buflen);
-  uint wr;
+  unsigned int wr;
   pgm_res = f_write(ppgm_fp, buf, buflen, &wr);
   DBGSHELL(" ... write %i  err=%i\n",wr,pgm_res);
   return wr;
@@ -1242,7 +1242,7 @@ int4 shell_read_saved_state(void *buf, int4 buflen) {
     readix++;
   }
 #endif  
-  uint rd;
+  unsigned int rd;
   pgm_res = f_read(ppgm_fp, buf, buflen, &rd);
   DBGSHELL(" ... read %i  err=%i\n",rd,pgm_res);
   return rd;
@@ -1253,7 +1253,7 @@ bool shell_write_saved_state(const void *buf, int4 buflen) {
 
   if ( ST(STAT_SOFT_OFF) ) return true; // Don't write on soft off
 
-  uint wr;
+  unsigned int wr;
   pgm_res = f_write(ppgm_fp, buf, buflen, &wr);
   DBGSHELL(" ... write %i  err=%i\n",wr,pgm_res);
   return pgm_res == FR_OK;
@@ -1348,7 +1348,7 @@ void thell_draw_menu_key(int n, int highlight, const char *s, int length) {
 
   // Re-encode menu text to normal string
   char t[MENU_KEY_LABEL_LEN+2];
-  uint j = 0;
+  unsigned int j = 0;
   for(int i=0; i<length; i++) {
     // Skip chars with 8th bit set - that way denotes free42 how to shortcut command names
     if( s[i] & 0x80 ) continue;
@@ -1691,14 +1691,14 @@ char * get_stack_layout_str(char *s, int layout) {
 
 // 0 - OK
 int savestat_init_read() {
-  uint ver[2];
-  uint rd;
+  unsigned int ver[2];
+  unsigned int rd;
   char * state_file_name = get_reset_state_file();
   pgm_res = FR_DISK_ERR;
   if ( !sys_disk_ok() || state_file_name == NULL ) return -1;
   pgm_res = f_open(ppgm_fp,  state_file_name , FA_READ);
   if ( pgm_res != FR_OK ) return -1;
-  pgm_res = f_lseek(ppgm_fp, f_size(ppgm_fp)-sizeof(savestat_data_t)-sizeof(uint) );
+  pgm_res = f_lseek(ppgm_fp, f_size(ppgm_fp)-sizeof(savestat_data_t)-sizeof(unsigned int) );
   if ( pgm_res != FR_OK ) return -1;
   pgm_res = f_read(ppgm_fp,ver,sizeof(ver),&rd);
   if ( pgm_res != FR_OK || rd != sizeof(ver) || ver[1] != SAVESTAT_MAGIC) return -1;
@@ -2414,7 +2414,7 @@ void program_main() {
 
         if ( !ST(STAT_SOFT_OFF) && sys_disk_ok() ) {
           savestat_data_t dat;
-          uint wr;
+          unsigned int wr;
           memset(&dat,0,sizeof(dat));
           dat.magic = SAVESTAT_MAGIC;
 
@@ -2557,11 +2557,11 @@ void program_main() {
       //core_init(read_statefile, FREE42_VERSION);
       if ( read_statefile ) {
         savestat_data_t dat;
-        uint rd;
+        unsigned int rd;
         pgm_res = f_read(ppgm_fp, &dat, sizeof(savestat_data_t), &rd);
         if ( pgm_res == FR_OK && dat.magic == SAVESTAT_MAGIC ) {
           rtc_write_century(dat.century);
-          core_set_printer_delay(dat.printer_delay ? (10*(uint)dat.printer_delay) : DFLT_82240_LINE_DUR); // Turn 0 to default
+          core_set_printer_delay(dat.printer_delay ? (10*(unsigned int)dat.printer_delay) : DFLT_82240_LINE_DUR); // Turn 0 to default
 
           // == Statefile load flags
           //SETBY_ST(dat.flags & SAVESTAT_FLAG_BEEP_MUTE, STAT_BEEP_MUTE);

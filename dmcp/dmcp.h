@@ -452,8 +452,8 @@ typedef struct {
 void print_byte(uint8_t b);
 
 // Printer delay in ms
-uint printer_get_delay();
-void printer_set_delay(uint val);
+unsigned int printer_get_delay();
+void printer_set_delay(unsigned int val);
 
 
 void printer_advance_buf(int what);
@@ -745,7 +745,7 @@ void key_pop_all();
 int key_to_nr(int key);
 void wait_for_key_press();
 int runner_get_key(int *repeat);
-int runner_get_key_delay(int *repeat, uint timeout, uint rep0, uint rep1, uint rep1tout);
+int runner_get_key_delay(int *repeat, unsigned int timeout, unsigned int rep0, unsigned int rep1, unsigned int rep1tout);
 void wait_for_key_release(int tout);
 
 

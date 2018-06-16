@@ -396,9 +396,9 @@ int select_programs(const char * title, int * pgm_indices, int * pgm_cnt) {
   int sel_ln = 0;
 
   // We need rather big buffer ... use aux memory buffer for that
-  const uint pgm_list_size = AUX_BUF_PGM_LIST_SIZE;
-  const uint sels_size = AUX_BUF_SELS_SIZE;
-  const uint max_disp_pgm_char = 24;
+  const unsigned int pgm_list_size = AUX_BUF_PGM_LIST_SIZE;
+  const unsigned int sels_size = AUX_BUF_SELS_SIZE;
+  const unsigned int max_disp_pgm_char = 24;
   const int pgm_lines = 7;
   
   char * buf = aux_buf_ptr();
